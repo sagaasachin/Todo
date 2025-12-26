@@ -17,13 +17,22 @@ dotenv.config();
 const app = express();
 
 /* -----------------------------
+   CONFIG
+----------------------------- */
+const PORT = process.env.PORT || 5000;
+
+const allowedOrigins = process.env.SOCKET_ORIGIN?.split(",") || [
+  "http://localhost:5173",
+];
+
+/* -----------------------------
    MIDDLEWARES
 ----------------------------- */
 app.use(express.json());
 
 app.use(
   cors({
-    origin: process.env.SOCKET_ORIGIN?.split(",") || ["http://localhost:5173"],
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -36,7 +45,7 @@ const server = http.createServer(app);
 
 const io = new IOServer(server, {
   cors: {
-    origin: process.env.SOCKET_ORIGIN?.split(",") || ["http://localhost:5173"],
+    origin: allowedOrigins,
     credentials: true,
   },
 });
@@ -65,8 +74,8 @@ mongoose.connection.once("open", async () => {
   console.log("MongoDB Connected ✔");
 
   // Start server
-  server.listen(process.env.PORT, () => {
-    console.log(`Server running on port ${process.env.PORT} 🚀`);
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} 🚀`);
   });
 
   // Start Agenda AFTER Mongo is ready

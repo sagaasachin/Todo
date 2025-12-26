@@ -5,7 +5,6 @@ export const authApi = axios.create({
   withCredentials: true,
 });
 
-// Optional: attach JWT automatically
 authApi.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
